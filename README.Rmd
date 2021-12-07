@@ -1,0 +1,69 @@
+---
+title: "README.Rmd Problem Set #7"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## GitHub Documents
+
+This is an R Markdown format used for publishing markdown documents to GitHub. When you click the **Knit** button all R code chunks are run and a markdown file (.md) suitable for publishing to GitHub is generated.
+
+## Including Code
+
+You can include R code in the document as follows:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+library(dplyr)
+library(tidyverse)
+library(fivethirtyeight)
+library(leaflet)
+library(sf)
+library(maps)
+
+# USA specific data
+library(USAboundaries)
+library(tidycensus)
+library(tmaptools)
+
+USA_map <-  maps::map("state", plot = FALSE, fill = TRUE)
+#plot(USA_map)
+
+# Convert maps package map object to sf object using st_as_sf() again:
+USA_sf <- USA_map %>% 
+  st_as_sf(crs = 4326)
+
+  
+MA_sf <- USA_sf %>% 
+filter(ID == "massachusetts")
+
+#ggplot() +
+  #geom_sf(data = MA_sf) 
+
+
+MA_cities <- tibble(
+  name = c("Boston", "Salem", "Worcester", "Springfield"), 
+  lat = c(42.3601, 42.5195, 42.2626, 42.1015), 
+  lon = c(-71.0589, -70.8967, -71.8023, -72.5898))
+
+MA_cities_sf <- MA_cities %>%
+  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+MA_cities
+
+ggplot() +
+  geom_sf(data = MA_sf) +
+  geom_sf(data = MA_cities_sf, aes(col = name), size = 2) 
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
